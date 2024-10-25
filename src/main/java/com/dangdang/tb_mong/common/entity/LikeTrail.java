@@ -3,7 +3,7 @@ package com.dangdang.tb_mong.common.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Like_Trail")
+@Table(name = "like_trail")
 public class LikeTrail {
 
     @Id

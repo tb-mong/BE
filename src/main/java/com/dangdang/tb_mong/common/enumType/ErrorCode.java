@@ -15,12 +15,18 @@ public enum ErrorCode {
 
     // 401
     NOT_FOUND_USER(401, "등록된 사용자가 없습니다."),
+    NOT_FOUND_CHARACTER(401, "등록된 캐릭터가 없습니다."),
     NOT_MATCHING_INFO(401, "아이디 또는 비밀번호를 잘못 입력했습니다."),
     NOT_TOKEN(401, "토큰이 없습니다."),
     NOT_VALID_TOKEN(401, "토큰이 유효하지 않습니다."),
+    FILE_NOT_FOUND(401, "파일을 찾을 수 없습니다."),
+    CHARACTER_NOT_UNLOCKED(401, "캐릭터가 공개되지 않았습니다."),
 
     // 403
     ACESS_DENIED_EMAIL(403, "접근 권한이 없는 사용자 요청입니다."),
+
+    // 500
+    INTERNAL_SERVER_ERROR(500, "서버 내부 문제입니다."),
     ;
 
     private final int code;

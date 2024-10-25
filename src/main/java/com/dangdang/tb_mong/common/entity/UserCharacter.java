@@ -1,9 +1,11 @@
 package com.dangdang.tb_mong.common.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
-@Table(name = "User_Character")
+@Table(name = "user_character")
+@Getter
 public class UserCharacter {
 
     @Id
@@ -20,4 +22,8 @@ public class UserCharacter {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void setIsRepresentative(Boolean isRepresentative) {
+        this.isRepresentative = isRepresentative;
+    }
 }

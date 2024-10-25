@@ -1,9 +1,11 @@
 package com.dangdang.tb_mong.common.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
-@Table(name = "Character")
+@Table(name = "`character`")
+@Getter
 public class Character {
 
     @Id

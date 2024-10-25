@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/swagger")
 @Tag(name = "Swagger 연동 테스트용", description = "Swagger를 이용한 API 연동 테스트용 컨트롤러")
 public class SwaggerTestController {
     @GetMapping("/test")

@@ -1,0 +1,59 @@
+package com.dangdang.tb_mong.common.Service;
+
+import com.dangdang.tb_mong.common.entity.User;
+import com.dangdang.tb_mong.common.entity.UserCharacter;
+import com.dangdang.tb_mong.common.enumType.ErrorCode;
+import com.dangdang.tb_mong.common.exception.CustomException;
+import com.dangdang.tb_mong.common.repository.RepreCharacterRepository;
+import com.dangdang.tb_mong.common.repository.UserCharacterRepository;
+import com.dangdang.tb_mong.common.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+
+@Service
+@RequiredArgsConstructor
+public class ImageService {
+    private final UserCharacterRepository userCharacterRepository;
+    private final UserRepository userRepository;
+
+    public Resource getImageByCharacterId(Long characterId) {
+        UserCharacter userCharacter = userCharacterRepository.findById(characterId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_CHARACTER));
+
+        try {
+            // 이미지 URL에서 Resource를 생성
+            Resource imageResource = new UrlResource(userCharacter.getCharacter().getImage());
+            if (imageResource.exists() && imageResource.isReadable()) {
+                // 이미지 파일을 바이트 배열로 변환하여 반환
+                return imageResource;
+            } else {
+                throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.FILE_NOT_FOUND);
+            }
+        } catch (IOException e) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public Resource getImageByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+
+        try {
+            // 이미지 URL에서 Resource를 생성
+            Resource imageResource = new UrlResource(user.getRepreCharacter().getImage());
+            if (imageResource.exists() && imageResource.isReadable()) {
+                // 이미지 파일을 바이트 배열로 변환하여 반환
+                return imageResource;
+            } else {
+                throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.FILE_NOT_FOUND);
+            }
+        } catch (IOException e) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+}

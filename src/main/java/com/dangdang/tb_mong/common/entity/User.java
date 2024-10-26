@@ -19,10 +19,6 @@ public class User {
     private Integer level;
     private Integer exp;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "repre_character_id")
-//    private RepreCharacter repreCharacter;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Location location;
@@ -33,5 +29,10 @@ public class User {
 
     public void setRepreCharacter(RepreCharacter repreCharacter) {
         this.repreCharacter = repreCharacter;
+    }
+
+    public void levelup() {
+        this.level += 1;
+        this.exp = 0;
     }
 }

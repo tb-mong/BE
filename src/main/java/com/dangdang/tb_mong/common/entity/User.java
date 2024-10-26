@@ -14,7 +14,6 @@ public class User {
 
     private Long kakaoUuid;
     private String kakaoEmail;
-    private String name;
     private String nickname;
     private Integer level;
     private Integer exp;

@@ -1,12 +1,15 @@
 package com.dangdang.tb_mong.common.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.sql.Date;
 
 @Entity
 @Table(name = "trail")
+@Getter
 public class Trail {
 
     @Id
@@ -20,6 +23,7 @@ public class Trail {
     private LocalTime time;
     private BigDecimal perHour;
     private Integer likeCnt;
+    private Date date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

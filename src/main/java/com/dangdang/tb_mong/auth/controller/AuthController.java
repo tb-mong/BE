@@ -1,7 +1,7 @@
 package com.dangdang.tb_mong.auth.controller;
 
-import com.dangdang.tb_mong.auth.dto.KakaoUserInfoResponse;
 import com.dangdang.tb_mong.auth.service.KakaoAuthService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,17 +15,19 @@ public class AuthController {
 
     // 카카오 로그인 처리 후 JWT 토큰 발급
     @GetMapping("/kakao")
+    @Operation(summary = "")
     public String handleKakaoLogin(@RequestParam String token) {
         String result = kakaoAuthService.handleKakaoAuth(token);
 
         return result;
     }
 
-    // 회원가입 요청
+    // 회원가입 처리 후 JWT 토큰 발급
     @PostMapping("/signup")
+    @Operation(summary = "")
     public String signUpUser(@RequestParam String token,
-                             @RequestParam String locationName) {
-        String result = kakaoAuthService.signUpUser(token, locationName);
+                             @RequestParam String locationCode) {
+        String result = kakaoAuthService.signUpUser(token, locationCode);
         return result;
     }
 }

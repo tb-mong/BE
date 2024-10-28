@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/home")
-@Tag(name = "홈 관련 기능", description = "")
+@Tag(name = "홈 관련 기능", description = "사용자 정보, 레벨 및 대표 캐릭터 이미지를 처리하는 API입니다.")
 public class HomeController {
     private final ImageService imageService;
     private final HomeService homeService;
@@ -40,9 +40,9 @@ public class HomeController {
         return homeService.levelupEvent(userId);
     }
 
-//    @GetMapping("/info")
-//    @Operation(summary = "사용자 산책 정보")
-//    public UserInfoResponse getUserInfo(@RequestParam Long userId){
-//        return homeService.getUserInfo(userId);
-//    }
+    @GetMapping("/info")
+    @Operation(summary = "사용자 산책 정보")
+    public UserInfoResponse getUserInfo(@RequestParam Long userId){
+        return homeService.getUserInfo(userId);
+    }
 }

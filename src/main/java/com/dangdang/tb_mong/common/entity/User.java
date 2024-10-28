@@ -12,7 +12,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long kakaoUuid;
+    private String kakaoUuid;
     private String kakaoEmail;
     private String nickname;
     private Integer level;

@@ -2,6 +2,9 @@ spring:
   application:
     name: tb-mong
 
+  profiles:
+    include: secret
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3303/mong?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
@@ -29,3 +32,7 @@ springdoc:
     disable-swagger-default-url: true
     display-request-duration: true
 #  show-login-endpoint: true
+
+#
+#jwt:
+#  secret: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret

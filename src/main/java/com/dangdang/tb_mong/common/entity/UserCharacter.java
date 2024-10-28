@@ -1,11 +1,17 @@
 package com.dangdang.tb_mong.common.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "user_character")
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserCharacter {
 
     @Id

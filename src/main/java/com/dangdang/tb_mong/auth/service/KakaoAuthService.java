@@ -1,12 +1,19 @@
 package com.dangdang.tb_mong.auth.service;
 
 import com.dangdang.tb_mong.auth.dto.KakaoUserInfoResponse;
+import com.dangdang.tb_mong.common.entity.Character;
+import com.dangdang.tb_mong.common.entity.Location;
+import com.dangdang.tb_mong.common.entity.RepreCharacter;
 import com.dangdang.tb_mong.common.entity.User;
+import com.dangdang.tb_mong.common.entity.UserCharacter;
 import com.dangdang.tb_mong.common.enumType.ErrorCode;
+import com.dangdang.tb_mong.common.enumType.Role;
 import com.dangdang.tb_mong.common.exception.CustomException;
-import com.dangdang.tb_mong.common.repository.UserRepository;
+import com.dangdang.tb_mong.common.jwt.JwtTokenProvider;
+import com.dangdang.tb_mong.common.repository.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -17,24 +24,81 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
 public class KakaoAuthService {
     private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final LocationRepository locationRepository;
+    private final CharacterRepository characterRepository;
+    private final UserCharacterRepository userCharacterRepository;
+    private final RepreCharacterRepository repreCharacterRepository;
 
     public String handleKakaoAuth(String token) {
         KakaoUserInfoResponse userInfo = getKakaoUserInfo(token);
 
         User user = userRepository.findByKakaoUuid(userInfo.getUuid())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER_FOR_SIGNUP));
 
-        return "none";
+        String result = jwtTokenProvider.createToken(String.valueOf(user.getId()));
+
+        return result;
     }
 
-    public String signUpUser(String token, String locationName) {
-        return "none";
+    public String signUpUser(String token, String locationCode) {
+        KakaoUserInfoResponse userInfo = getKakaoUserInfo(token);
+
+        Location location = locationRepository.findByCode(locationCode)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_LOCATION));
+
+        User user = User.builder()
+                .kakaoUuid(userInfo.getUuid())
+                .nickname(userInfo.getNickname())
+                .kakaoEmail(userInfo.getEmail())
+                .level(1)
+                .exp(0)
+                .role(Role.USER)
+                .location(location)
+                .build();
+
+        userRepository.save(user);
+
+        List<Character> characters = characterRepository.findAll();
+
+        UserCharacter userCharacter = UserCharacter.builder()
+                .unlocked(true)
+                .isRepresentative(true)
+                .character(characters.get(0))
+                .user(user)
+                .build();
+
+        userCharacterRepository.save(userCharacter);
+
+        RepreCharacter repreCharacter = RepreCharacter.builder()
+                .userCharacter(userCharacter)
+                .user(user)
+                .build();
+
+        repreCharacterRepository.save(repreCharacter);
+
+        for (int i = 1; i<characters.size(); i++){
+            UserCharacter uCharacter = UserCharacter.builder()
+                    .unlocked(false)
+                    .isRepresentative(false)
+                    .character(characters.get(i))
+                    .user(user)
+                    .build();
+
+            userCharacterRepository.save(uCharacter);
+        }
+
+        // JWT 토큰 발급
+        String result = jwtTokenProvider.createToken(String.valueOf(user.getId()));
+
+        return result;
     }
 
     public KakaoUserInfoResponse getKakaoUserInfo(String token) {

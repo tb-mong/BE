@@ -1,11 +1,18 @@
 package com.dangdang.tb_mong.common.entity;
 
+import com.dangdang.tb_mong.common.enumType.Role;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "user")
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -17,18 +24,12 @@ public class User {
     private String nickname;
     private Integer level;
     private Integer exp;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Location location;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "repre_character_id")
-    private RepreCharacter repreCharacter;
-
-    public void setRepreCharacter(RepreCharacter repreCharacter) {
-        this.repreCharacter = repreCharacter;
-    }
 
     public void levelup() {
         this.level += 1;

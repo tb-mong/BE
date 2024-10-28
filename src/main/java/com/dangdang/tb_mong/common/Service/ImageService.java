@@ -1,5 +1,6 @@
 package com.dangdang.tb_mong.common.Service;
 
+import com.dangdang.tb_mong.common.entity.RepreCharacter;
 import com.dangdang.tb_mong.common.entity.User;
 import com.dangdang.tb_mong.common.entity.UserCharacter;
 import com.dangdang.tb_mong.common.enumType.ErrorCode;
@@ -20,6 +21,7 @@ import java.io.IOException;
 public class ImageService {
     private final UserCharacterRepository userCharacterRepository;
     private final UserRepository userRepository;
+    private final RepreCharacterRepository repreCharacterRepository;
 
     public Resource getImageByCharacterId(Long characterId) {
         UserCharacter userCharacter = userCharacterRepository.findById(characterId)
@@ -40,12 +42,12 @@ public class ImageService {
     }
 
     public Resource getImageByUserId(Long userId) {
-        User user = userRepository.findById(userId)
+        RepreCharacter repreCharacter = repreCharacterRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         try {
             // 이미지 URL에서 Resource를 생성
-            Resource imageResource = new UrlResource(user.getRepreCharacter().getImage());
+            Resource imageResource = new UrlResource(repreCharacter.getImage());
             if (imageResource.exists() && imageResource.isReadable()) {
                 // 이미지 파일을 바이트 배열로 변환하여 반환
                 return imageResource;

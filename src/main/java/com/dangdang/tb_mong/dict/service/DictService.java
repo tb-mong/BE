@@ -48,10 +48,6 @@ public class DictService {
     }
 
     public CharacterResponse setRepreCharacter(Long userId, Long characterId) {
-        // 사용자 조회
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
-
         // 선택한 캐릭터 조회
         UserCharacter newRepreCharacter = userCharacterRepository.findById(characterId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_CHARACTER));
@@ -62,7 +58,9 @@ public class DictService {
         }
 
         // 기존 대표 캐릭터 해제
-        RepreCharacter currentRepreCharacter = user.getRepreCharacter();
+        RepreCharacter currentRepreCharacter = repreCharacterRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+
         if (currentRepreCharacter != null) {
             UserCharacter currentRepreUserCharacter = currentRepreCharacter.getUserCharacter();
             if (currentRepreUserCharacter != null) {
@@ -76,11 +74,9 @@ public class DictService {
         // RepreCharacter 갱신
         RepreCharacter repreCharacter = currentRepreCharacter != null ? currentRepreCharacter : new RepreCharacter();
         repreCharacter.setUserCharacter(newRepreCharacter);
-        user.setRepreCharacter(repreCharacter);
 
         // 데이터 저장
         repreCharacterRepository.save(repreCharacter);
-        userRepository.save(user);
 
         // 응답 객체 생성
         CharacterResponse response = new CharacterResponse(newRepreCharacter.getCharacter().getId(), newRepreCharacter.getCharacter().getImage(), newRepreCharacter.getIsRepresentative(), newRepreCharacter.getUnlocked());

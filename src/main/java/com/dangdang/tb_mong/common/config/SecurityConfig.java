@@ -1,11 +1,16 @@
 package com.dangdang.tb_mong.common.config;
 
+import com.dangdang.tb_mong.common.jwt.JwtAuthFilter;
+import com.dangdang.tb_mong.common.jwt.JwtTokenProvider;
 import jakarta.servlet.DispatcherType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -14,7 +19,10 @@ import java.util.Arrays;
 
 @EnableWebSecurity
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     private static final String[] DEFAULT_WHITELIST = {
             "/status", "/images/**", "/error/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
@@ -33,8 +41,11 @@ public class SecurityConfig {
                         .requestMatchers(DEFAULT_WHITELIST).permitAll()
                         .requestMatchers(DEVELOP_TEST_PATH).permitAll()
                         .anyRequest().authenticated()
-                );
-
+                )// 세션 비활성화 (stateless 하도록 설정)
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // Http 요청에 대한 Jwt 유효성 선 검사
+                .addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

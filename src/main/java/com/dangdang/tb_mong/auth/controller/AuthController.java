@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@Tag(name = "로그인 및 회원가입", description = "")
+@Tag(name = "로그인 및 회원가입", description = "카카오 로그인 및 회원가입 API")
 @RequiredArgsConstructor
 public class AuthController {
     private final KakaoAuthService kakaoAuthService;

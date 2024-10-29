@@ -35,4 +35,12 @@ public class User {
         this.level += 1;
         this.exp = 0;
     }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public void setNickname(String newNickname) {
+        this.nickname = newNickname;
+    }
 }

@@ -12,6 +12,7 @@ public enum ErrorCode {
     CONTENT_IS_NULL(400, "입력되지 않은 정보가 있습니다."),
     DUPLICATED_USERID(400, "중복된 아이디입니다."),
     NOT_FOUND_PARK_TYPE(400, "유효하지 않은 값입니다."),
+    USER_ALREADY_EXISTS(400, "사용자가 이미 존재합니다."),
 
     // 401
     NOT_FOUND_USER(401, "등록된 사용자가 없습니다."),

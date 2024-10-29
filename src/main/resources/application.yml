@@ -32,7 +32,3 @@ springdoc:
     disable-swagger-default-url: true
     display-request-duration: true
 #  show-login-endpoint: true
-
-#
-#jwt:
-#  secret: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret

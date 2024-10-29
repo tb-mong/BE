@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/exception-test")
-@Tag(name = "Custom Exception 테스트용", description = "")
+@Tag(name = "Custom Exception 테스트용", description = "Custom Exception 테스트용 API")
 public class CustomExceptionTestController {
 
     @GetMapping("/bad-request")

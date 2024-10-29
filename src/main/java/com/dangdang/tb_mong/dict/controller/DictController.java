@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/dict")
-@Tag(name = "캐릭터 도감", description = "캐릭터 목록 조회 및 대표 캐릭터 설정 API입니다.")
+@Tag(name = "캐릭터 도감", description = "캐릭터 목록 조회 및 대표 캐릭터 설정 API")
 public class DictController {
 
     private final DictService dictService;

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -50,6 +51,12 @@ public class KakaoAuthService {
 
     public String signUpUser(String token, String locationCode) {
         KakaoUserInfoResponse userInfo = getKakaoUserInfo(token);
+
+        // 유저가 이미 존재하는지 확인
+        Optional<User> existingUser = userRepository.findByKakaoUuid(userInfo.getUuid());
+        if (existingUser.isPresent()) {
+            return jwtTokenProvider.createToken(String.valueOf(existingUser.get().getId()));
+        }
 
         Location location = locationRepository.findByCode(locationCode)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_LOCATION));

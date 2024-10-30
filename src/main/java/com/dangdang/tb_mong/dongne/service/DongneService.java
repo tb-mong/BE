@@ -40,11 +40,22 @@ public class DongneService {
     }
 
     public String getTopUser(Long userId, Long locationId) {
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
-//
-//        List<User> users = userRepository.findByLocationId(locationId);
-        return null;
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+
+        List<User> users = userRepository.findByLocationId(locationId);
+
+        int max = 0;
+        int maxIndex = 0;
+
+        for (int i = 0; i< users.size(); i++){
+            if (users.get(i).getCount() >= max){
+                maxIndex = i;
+                max = users.get(i).getCount();
+            }
+        }
+
+        return users.get(maxIndex).getNickname();
     }
 
     public List<TrailDto> getTrailList(Long userId, Long locationId) {

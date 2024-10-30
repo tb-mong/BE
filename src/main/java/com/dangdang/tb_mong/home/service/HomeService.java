@@ -47,6 +47,9 @@ public class HomeService {
     }
 
     public UserInfoResponse getUserInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+
         LocalDate today = LocalDate.now();
 
         List<Trail> todayWalks = trailRepository.findByUserIdAndDate(userId, today);
@@ -57,7 +60,7 @@ public class HomeService {
                 .mapToDouble(Double::doubleValue)
                 .sum();
 
-        int todayCount = todayWalks.size();
+        int todayCount = user.getCount();
 
         int totalWalkCount = trailRepository.countByUserId(userId);
 

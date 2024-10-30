@@ -68,6 +68,7 @@ public class KakaoAuthService {
                 .level(1)
                 .exp(0)
                 .role(Role.USER)
+                .count(0)
                 .location(location)
                 .build();
 

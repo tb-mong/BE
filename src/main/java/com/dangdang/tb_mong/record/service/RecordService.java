@@ -7,7 +7,7 @@ import com.dangdang.tb_mong.common.exception.CustomException;
 import com.dangdang.tb_mong.common.repository.TrailRepository;
 import com.dangdang.tb_mong.common.repository.UserRepository;
 import com.dangdang.tb_mong.record.dto.WalkStatusDto;
-import com.dangdang.tb_mong.record.dto.trailDto;
+import com.dangdang.tb_mong.common.dto.TrailDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class RecordService {
     private final UserRepository userRepository;
     private final TrailRepository trailRepository;
 
-    public List<trailDto> getWalksByDate(Long userId, Date date) {
+    public List<TrailDto> getWalksByDate(Long userId, Date date) {
         // 사용자 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
@@ -37,11 +37,12 @@ public class RecordService {
 
         // trail 데이터를 trailDto로 매핑
         return trails.stream()
-                .map(trail -> new trailDto(
+                .map(trail -> new TrailDto(
                         trail.getId(),
                         trail.getName(),
                         trail.getLocation().getName(),
                         trail.getKm(),
+                        trail.getUser().getNickname(),
                         trail.getLikeCnt(),
                         trail.getImage()
                 ))

@@ -1,7 +1,7 @@
 package com.dangdang.tb_mong.record.controller;
 
 import com.dangdang.tb_mong.record.dto.WalkStatusDto;
-import com.dangdang.tb_mong.record.dto.trailDto;
+import com.dangdang.tb_mong.common.dto.TrailDto;
 import com.dangdang.tb_mong.record.service.RecordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +24,7 @@ public class RecordController {
 
     @GetMapping("/date")
     @Operation(summary = "특정 날짜의 산책 기록 조회")
-    public List<trailDto> getWalksByDate(@RequestParam Long userId,
+    public List<TrailDto> getWalksByDate(@RequestParam Long userId,
                                          @RequestParam Date date){
         return recordService.getWalksByDate(userId, date);
     }

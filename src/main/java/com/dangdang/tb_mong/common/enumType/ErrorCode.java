@@ -24,6 +24,9 @@ public enum ErrorCode {
     CHARACTER_NOT_UNLOCKED(401, "캐릭터가 공개되지 않았습니다."),
     NOT_FOUND_USER_FOR_SIGNUP(401, "사용자 정보를 찾을 수 없습니다. 회원가입이 필요합니다."),
     NOT_FOUND_LOCATION(401, "등록된 동네가 없습니다."),
+    NOT_FOUND_TRAIL(401, "등록된 산책로가 없습니다."),
+    ALREADY_LIKED_TRAIL(401, "이미 좋아요가 눌러져있습니다."),
+    INVALID_SORT_OPTION(401, "정렬 옵션이 유효하지 않습니다."),
 
 
     // 403

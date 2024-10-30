@@ -26,6 +26,7 @@ public class User {
     private Integer exp;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private int count;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")

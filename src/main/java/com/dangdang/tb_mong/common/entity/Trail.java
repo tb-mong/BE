@@ -32,5 +32,9 @@ public class Trail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Location location;
+
+    public void setLikeCnt(int i) {
+        this.likeCnt = i;
+    }
 }
 

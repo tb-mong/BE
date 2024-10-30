@@ -14,4 +14,6 @@ public interface TrailRepository extends JpaRepository<Trail, Long> {
     int countByUserId(Long userId);
 
     List<Trail> findByLocationId(Long locationId);
+
+    List<Trail> findByLocationIdAndNameContaining(Long locationId, String name);
 }

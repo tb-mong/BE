@@ -17,4 +17,12 @@ public class LikeTrail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trail_id")
     private Trail trail;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setTrail(Trail trail) {
+        this.trail = trail;
+    }
 }

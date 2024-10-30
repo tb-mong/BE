@@ -12,4 +12,6 @@ public interface TrailRepository extends JpaRepository<Trail, Long> {
     List<Trail> findByUserIdAndDateBetween(Long userId, LocalDate startDate, LocalDate endDate);
 
     int countByUserId(Long userId);
+
+    List<Trail> findByLocationId(Long locationId);
 }

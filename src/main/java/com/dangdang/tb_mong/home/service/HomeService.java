@@ -50,9 +50,18 @@ public class HomeService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
+        double totalKm = user.getTotal_km().doubleValue();
+
+        int totalCount = user.getTotal_count();
+
         LocalDate today = LocalDate.now();
 
         List<Trail> todayWalks = trailRepository.findByUserIdAndDate(userId, today);
+        
+        if (todayWalks.isEmpty()){
+            UserInfoResponse emptyDto = new UserInfoResponse(0, 0.0, totalCount, totalKm);
+            return emptyDto;
+        }
 
         double todayKm = todayWalks.stream()
                 .map(Trail::getKm)           // BigDecimal 객체로 가져오기
@@ -60,10 +69,8 @@ public class HomeService {
                 .mapToDouble(Double::doubleValue)
                 .sum();
 
-        int todayCount = user.getTotal_count();
+        int todayCount = todayWalks.size();
 
-        int totalWalkCount = trailRepository.countByUserId(userId);
-
-        return new UserInfoResponse(todayCount, todayKm, totalWalkCount);
+        return new UserInfoResponse(todayCount, todayKm, totalCount, totalKm);
     }
 }

@@ -1,22 +1,18 @@
 package com.dangdang.tb_mong.dongne.service;
 
-import com.dangdang.tb_mong.common.entity.LikeTrail;
-import com.dangdang.tb_mong.common.entity.Location;
-import com.dangdang.tb_mong.common.entity.Trail;
-import com.dangdang.tb_mong.common.entity.User;
+import com.dangdang.tb_mong.common.entity.*;
 import com.dangdang.tb_mong.common.enumType.ErrorCode;
 import com.dangdang.tb_mong.common.exception.CustomException;
-import com.dangdang.tb_mong.common.repository.LikeTrailRepository;
-import com.dangdang.tb_mong.common.repository.LocationRepository;
-import com.dangdang.tb_mong.common.repository.TrailRepository;
-import com.dangdang.tb_mong.common.repository.UserRepository;
+import com.dangdang.tb_mong.common.repository.*;
 import com.dangdang.tb_mong.dongne.dto.LocationNameResponse;
 import com.dangdang.tb_mong.common.dto.TrailDto;
+import com.dangdang.tb_mong.dongne.dto.TopUserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +24,7 @@ public class DongneService {
     private final LocationRepository locationRepository;
     private final TrailRepository trailRepository;
     private final LikeTrailRepository likeTrailRepository;
+    private final UserLocationSummaryRepository userLocationSummaryRepository;
 
     public LocationNameResponse getLocationName(Long userId) {
         User user = userRepository.findById(userId)
@@ -43,23 +40,36 @@ public class DongneService {
         return locationResponse;
     }
 
-    public String getTopUser(Long userId, Long locationId) {
+    public TopUserResponse getTopUser(Long userId, Long locationId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
-        List<User> users = userRepository.findByLocationId(locationId);
+        List<UserLocationSummary> userLocationSummaries = userLocationSummaryRepository.findAllByLocationId(locationId);
 
-        int max = 0;
-        int maxIndex = 0;
+        if (userLocationSummaries.isEmpty()){
+            TopUserResponse emptyDto = new TopUserResponse("없음", "없음");
+            return emptyDto;
+        }
 
-        for (int i = 0; i< users.size(); i++){
-            if (users.get(i).getTotal_count() >= max){
-                maxIndex = i;
-                max = users.get(i).getTotal_count();
+        BigDecimal maxKm = BigDecimal.valueOf(0.0);
+        int maxCount = 0;
+        int kmIndex = 0;
+        int countIndex = 0;
+
+        for (int i = 0; i<userLocationSummaries.size(); i++){
+            if (userLocationSummaries.get(i).getCount() >= maxCount){
+                countIndex = i;
+                maxCount = userLocationSummaries.get(i).getCount();
+            }
+            if (userLocationSummaries.get(i).getKm().compareTo(maxKm) >= 0){
+                kmIndex = i;
+                maxKm = userLocationSummaries.get(i).getKm();
             }
         }
 
-        return users.get(maxIndex).getNickname();
+        TopUserResponse dto = new TopUserResponse(userLocationSummaries.get(kmIndex).getUser().getNickname(), userLocationSummaries.get(countIndex).getUser().getNickname());
+
+        return dto;
     }
 
     public List<TrailDto> getTrailList(Long userId, Long locationId) {

@@ -2,6 +2,7 @@ package com.dangdang.tb_mong.dongne.controller;
 
 import com.dangdang.tb_mong.common.dto.TrailDto;
 import com.dangdang.tb_mong.dongne.dto.LocationNameResponse;
+import com.dangdang.tb_mong.dongne.dto.TopUserResponse;
 import com.dangdang.tb_mong.dongne.service.DongneService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,8 +26,8 @@ public class DongneController {
 
     @GetMapping("/top-user")
     @Operation(summary = "동네별 1위 사용자 조회")
-    public String getTopUser(@RequestParam Long userId,
-                             @RequestParam Long locationId){
+    public TopUserResponse getTopUser(@RequestParam Long userId,
+                                      @RequestParam Long locationId){
         return dongneService.getTopUser(userId, locationId);
     }
 

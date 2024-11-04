@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "user")
 @Getter
@@ -26,7 +28,8 @@ public class User {
     private Integer exp;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private int count;
+    private int total_count;
+    private BigDecimal total_km;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")

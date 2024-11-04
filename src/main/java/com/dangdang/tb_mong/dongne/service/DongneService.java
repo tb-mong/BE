@@ -53,9 +53,9 @@ public class DongneService {
         int maxIndex = 0;
 
         for (int i = 0; i< users.size(); i++){
-            if (users.get(i).getCount() >= max){
+            if (users.get(i).getTotal_count() >= max){
                 maxIndex = i;
-                max = users.get(i).getCount();
+                max = users.get(i).getTotal_count();
             }
         }
 

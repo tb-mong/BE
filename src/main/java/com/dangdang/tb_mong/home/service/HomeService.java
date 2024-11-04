@@ -60,7 +60,7 @@ public class HomeService {
                 .mapToDouble(Double::doubleValue)
                 .sum();
 
-        int todayCount = user.getCount();
+        int todayCount = user.getTotal_count();
 
         int totalWalkCount = trailRepository.countByUserId(userId);
 

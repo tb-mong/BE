@@ -1,11 +1,8 @@
 package com.dangdang.tb_mong.auth.service;
 
 import com.dangdang.tb_mong.auth.dto.KakaoUserInfoResponse;
+import com.dangdang.tb_mong.common.entity.*;
 import com.dangdang.tb_mong.common.entity.Character;
-import com.dangdang.tb_mong.common.entity.Location;
-import com.dangdang.tb_mong.common.entity.RepreCharacter;
-import com.dangdang.tb_mong.common.entity.User;
-import com.dangdang.tb_mong.common.entity.UserCharacter;
 import com.dangdang.tb_mong.common.enumType.ErrorCode;
 import com.dangdang.tb_mong.common.enumType.Role;
 import com.dangdang.tb_mong.common.exception.CustomException;
@@ -24,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +35,7 @@ public class KakaoAuthService {
     private final CharacterRepository characterRepository;
     private final UserCharacterRepository userCharacterRepository;
     private final RepreCharacterRepository repreCharacterRepository;
+    private final UserLocationSummaryRepository userLocationSummaryRepository;
 
     public String handleKakaoAuth(String token) {
         KakaoUserInfoResponse userInfo = getKakaoUserInfo(token);
@@ -68,11 +67,21 @@ public class KakaoAuthService {
                 .level(1)
                 .exp(0)
                 .role(Role.USER)
-                .count(0)
+                .total_count(0)
+                .total_km(BigDecimal.valueOf(0.0))
                 .location(location)
                 .build();
 
         userRepository.save(user);
+
+        UserLocationSummary userLocationSummary = UserLocationSummary.builder()
+                .km(BigDecimal.valueOf(0.0))
+                .count(0)
+                .user(user)
+                .location(location)
+                .build();
+
+        userLocationSummaryRepository.save(userLocationSummary);
 
         List<Character> characters = characterRepository.findAll();
 

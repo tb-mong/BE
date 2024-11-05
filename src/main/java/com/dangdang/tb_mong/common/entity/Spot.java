@@ -1,13 +1,17 @@
 package com.dangdang.tb_mong.common.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "spot")
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Spot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

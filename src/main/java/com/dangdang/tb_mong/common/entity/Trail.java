@@ -1,7 +1,10 @@
 package com.dangdang.tb_mong.common.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
@@ -10,6 +13,9 @@ import java.sql.Date;
 @Entity
 @Table(name = "trail")
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Trail {
 
     @Id
@@ -35,6 +41,10 @@ public class Trail {
 
     public void setLikeCnt(int i) {
         this.likeCnt = i;
+    }
+
+    public void imageUpdate(String newImageName) {
+        this.image = newImageName;
     }
 }
 

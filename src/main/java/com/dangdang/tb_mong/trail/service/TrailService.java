@@ -1,15 +1,9 @@
 package com.dangdang.tb_mong.trail.service;
 
-import com.dangdang.tb_mong.common.entity.Location;
-import com.dangdang.tb_mong.common.entity.Spot;
-import com.dangdang.tb_mong.common.entity.Trail;
-import com.dangdang.tb_mong.common.entity.User;
+import com.dangdang.tb_mong.common.entity.*;
 import com.dangdang.tb_mong.common.enumType.ErrorCode;
 import com.dangdang.tb_mong.common.exception.CustomException;
-import com.dangdang.tb_mong.common.repository.LocationRepository;
-import com.dangdang.tb_mong.common.repository.SpotRepository;
-import com.dangdang.tb_mong.common.repository.TrailRepository;
-import com.dangdang.tb_mong.common.repository.UserRepository;
+import com.dangdang.tb_mong.common.repository.*;
 import com.dangdang.tb_mong.trail.dto.SpotDto;
 import com.dangdang.tb_mong.trail.dto.TrailRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,6 +34,7 @@ public class TrailService {
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
     private final SpotRepository spotRepository;
+    private final UserLocationSummaryRepository userLocationSummaryRepository;
 
     @Value("${file}")
     private String rootFilePath;
@@ -65,14 +61,37 @@ public class TrailService {
 
         trailRepository.save(trail);
 
+        user.updateCount();
+        user.updateKm(trail.getKm());
+
         List<SpotDto> spotDtos = trailRequest.getSpotLists();
 
-        for(int i = 0; i<spotDtos.size(); i++){
+        for(int i = 0; i < spotDtos.size(); i++){
             Spot spot = Spot.builder()
                     .la(spotDtos.get(i).getLa())
                     .lo(spotDtos.get(i).getLo())
+                    .trail(trail)
                     .build();
             spotRepository.save(spot);
+        }
+
+        try {
+            UserLocationSummary userLocationSummary = userLocationSummaryRepository.findByLocationId(location.getId());
+
+            userLocationSummary.updateCount();
+            userLocationSummary.updateKm(trail.getKm());
+
+            userLocationSummaryRepository.save(userLocationSummary);
+
+        } catch (NullPointerException e){
+            UserLocationSummary newUserLocationSummary = UserLocationSummary.builder()
+                    .count(1)
+                    .km(trail.getKm())
+                    .location(location)
+                    .user(user)
+                    .build();
+
+            userLocationSummaryRepository.save(newUserLocationSummary);
         }
     }
 

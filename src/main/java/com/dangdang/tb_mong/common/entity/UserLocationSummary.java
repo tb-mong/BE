@@ -30,4 +30,13 @@ public class UserLocationSummary {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void updateCount() {
+        this.count++;
+    }
+
+    public void updateKm(BigDecimal km) {
+        BigDecimal tmp = km.add(this.km);
+        this.km = tmp;
+    }
 }

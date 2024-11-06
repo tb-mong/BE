@@ -47,4 +47,13 @@ public class User {
     public void setNickname(String newNickname) {
         this.nickname = newNickname;
     }
+
+    public void updateCount() {
+        total_count++;
+    }
+
+    public void updateKm(BigDecimal km) {
+        BigDecimal tmp = km.add(this.total_km);
+        this.total_km = tmp;
+    }
 }

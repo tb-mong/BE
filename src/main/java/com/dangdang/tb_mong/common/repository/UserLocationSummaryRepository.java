@@ -8,4 +8,6 @@ import java.util.List;
 public interface UserLocationSummaryRepository extends JpaRepository<UserLocationSummary, Long> {
 
     List<UserLocationSummary> findAllByLocationId(Long locationId);
+
+    UserLocationSummary findByLocationId(Long id);
 }

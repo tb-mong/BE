@@ -176,7 +176,7 @@ public class DongneService {
         likeTrailRepository.save(likeTrail);
 
         // 좋아요 수 증가
-        trail.setLikeCnt(trail.getLikeCnt() + 1);
+        trail.addLikeCnt();
         trailRepository.save(trail);
 
         TrailDto trailDto = TrailDto.builder()

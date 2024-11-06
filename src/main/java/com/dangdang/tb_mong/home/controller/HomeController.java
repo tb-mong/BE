@@ -1,7 +1,6 @@
 package com.dangdang.tb_mong.home.controller;
 
 import com.dangdang.tb_mong.common.Service.ImageService;
-import com.dangdang.tb_mong.dict.dto.CharacterResponse;
 import com.dangdang.tb_mong.home.dto.UserInfoResponse;
 import com.dangdang.tb_mong.home.dto.UserLevelResponse;
 import com.dangdang.tb_mong.home.service.HomeService;
@@ -11,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

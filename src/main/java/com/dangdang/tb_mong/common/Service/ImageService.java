@@ -1,7 +1,6 @@
 package com.dangdang.tb_mong.common.Service;
 
 import com.dangdang.tb_mong.common.entity.RepreCharacter;
-import com.dangdang.tb_mong.common.entity.User;
 import com.dangdang.tb_mong.common.entity.UserCharacter;
 import com.dangdang.tb_mong.common.enumType.ErrorCode;
 import com.dangdang.tb_mong.common.exception.CustomException;

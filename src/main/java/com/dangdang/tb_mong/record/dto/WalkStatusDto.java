@@ -8,6 +8,6 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 public class WalkStatusDto {
-    Date date;
-    boolean YN;
+    private Date date;
+    private boolean YN;
 }

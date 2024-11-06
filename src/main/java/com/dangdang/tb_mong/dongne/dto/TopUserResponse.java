@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class TopUserResponse {
-    String kmTopUser;
-    String countTopUser;
+    private String kmTopUser;
+    private String countTopUser;
 }

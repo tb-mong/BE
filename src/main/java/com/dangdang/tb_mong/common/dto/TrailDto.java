@@ -10,11 +10,11 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class TrailDto {
-    Long id;
-    String name;
-    String location_name;
-    BigDecimal km;
-    String nickname;
-    int like_count;
-    String image;
+    private Long id;
+    private String name;
+    private String location_name;
+    private BigDecimal km;
+    private String nickname;
+    private int like_count;
+    private String image;
 }

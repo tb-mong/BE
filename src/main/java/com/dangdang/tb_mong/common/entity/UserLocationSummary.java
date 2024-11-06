@@ -1,6 +1,5 @@
 package com.dangdang.tb_mong.common.entity;
 
-import com.dangdang.tb_mong.common.enumType.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

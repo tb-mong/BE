@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class KakaoUserInfoResponse {
-    String uuid;
-    String nickname;
-    String email;
+    private String uuid;
+    private String nickname;
+    private String email;
 }

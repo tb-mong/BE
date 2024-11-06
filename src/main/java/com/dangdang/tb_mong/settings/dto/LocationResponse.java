@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LocationResponse {
-    String locationName;
-    String locationCode;
+    private String locationName;
+    private String locationCode;
 }

@@ -39,12 +39,12 @@ public class Trail {
     @JoinColumn(name = "location_id")
     private Location location;
 
-    public void setLikeCnt(int i) {
-        this.likeCnt = i;
-    }
-
     public void imageUpdate(String newImageName) {
         this.image = newImageName;
+    }
+
+    public void addLikeCnt() {
+        this.likeCnt++;
     }
 }
 

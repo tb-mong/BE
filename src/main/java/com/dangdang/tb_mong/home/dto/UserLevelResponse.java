@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UserLevelResponse {
-    int level;
-    int exp;
+    private int level;
+    private int exp;
 }

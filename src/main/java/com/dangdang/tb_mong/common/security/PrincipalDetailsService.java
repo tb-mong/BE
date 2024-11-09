@@ -19,10 +19,10 @@ public class PrincipalDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
+    public PrincipalDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
         User user = userRepository.findByKakaoEmail(userEmail)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));   // 사용자가 DB 에 없으면 예외처리
 
-        return new PrincipalDetails(user, user.getKakaoEmail());   // 사용자 정보를 UserDetails 로 반환
+        return new PrincipalDetails(user, user.getKakaoEmail());  // 사용자 정보를 UserDetails 로 반환
     }
 }

@@ -6,6 +6,7 @@ import com.dangdang.tb_mong.common.enumType.ErrorCode;
 import com.dangdang.tb_mong.common.exception.CustomException;
 import com.dangdang.tb_mong.common.repository.TrailRepository;
 import com.dangdang.tb_mong.common.repository.UserRepository;
+import com.dangdang.tb_mong.common.security.PrincipalDetails;
 import com.dangdang.tb_mong.home.dto.UserInfoResponse;
 import com.dangdang.tb_mong.home.dto.UserLevelResponse;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +47,8 @@ public class HomeService {
         return dto;
     }
 
-    public UserInfoResponse getUserInfo(Long userId) {
-        User user = userRepository.findById(userId)
+    public UserInfoResponse getUserInfo(PrincipalDetails userDetails) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         double totalKm = user.getTotal_km().doubleValue();
@@ -56,7 +57,7 @@ public class HomeService {
 
         LocalDate today = LocalDate.now();
 
-        List<Trail> todayWalks = trailRepository.findByUserIdAndDate(userId, today);
+        List<Trail> todayWalks = trailRepository.findByUserIdAndDate(user.getId(), today);
         
         if (todayWalks.isEmpty()){
             UserInfoResponse emptyDto = new UserInfoResponse(0, 0.0, totalCount, totalKm);

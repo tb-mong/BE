@@ -26,11 +26,15 @@ public class PrincipalDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_USER");
-        Collection<GrantedAuthority> authorities = new ArrayList<>();   // 사용자 권한을 GrantedAuthority 로 추상화
-        authorities.add(simpleGrantedAuthority);
+//        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_USER");
+//        Collection<GrantedAuthority> authorities = new ArrayList<>();   // 사용자 권한을 GrantedAuthority 로 추상화
+//        authorities.add(simpleGrantedAuthority);
 
-        return authorities; // GrantedAuthority 로 추상화된 사용자 권한 반환
+        Collection<GrantedAuthority> collectors = new ArrayList<>();
+
+        collectors.add(()->{return "ROLE_" + user.getRole().name();});
+
+        return collectors;
     }
 
     @Override

@@ -16,8 +16,8 @@ public class AuthController {
     // 카카오 로그인 처리 후 JWT 토큰 발급
     @GetMapping("/kakao")
     @Operation(summary = "")
-    public String handleKakaoLogin(@RequestParam String token) {
-        String result = kakaoAuthService.handleKakaoAuth(token);
+    public String handleKakaoLogin(@RequestParam String kakaoAccessToken) {
+        String result = kakaoAuthService.handleKakaoAuth(kakaoAccessToken);
 
         return result;
     }
@@ -25,9 +25,9 @@ public class AuthController {
     // 회원가입 처리 후 JWT 토큰 발급
     @PostMapping("/signup")
     @Operation(summary = "")
-    public String signUpUser(@RequestParam String token,
+    public String signUpUser(@RequestParam String kakaoAccessToken,
                              @RequestParam String locationCode) {
-        String result = kakaoAuthService.signUpUser(token, locationCode);
+        String result = kakaoAuthService.signUpUser(kakaoAccessToken, locationCode);
         return result;
     }
 }

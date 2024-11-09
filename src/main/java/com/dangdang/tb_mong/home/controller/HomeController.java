@@ -1,6 +1,7 @@
 package com.dangdang.tb_mong.home.controller;
 
 import com.dangdang.tb_mong.common.Service.ImageService;
+import com.dangdang.tb_mong.common.security.PrincipalDetails;
 import com.dangdang.tb_mong.home.dto.UserInfoResponse;
 import com.dangdang.tb_mong.home.dto.UserLevelResponse;
 import com.dangdang.tb_mong.home.service.HomeService;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,7 +41,7 @@ public class HomeController {
 
     @GetMapping("/info")
     @Operation(summary = "사용자 산책 정보")
-    public UserInfoResponse getUserInfo(@RequestParam Long userId){
-        return homeService.getUserInfo(userId);
+    public UserInfoResponse getUserInfo(@AuthenticationPrincipal PrincipalDetails userDetails){
+        return homeService.getUserInfo(userDetails);
     }
 }

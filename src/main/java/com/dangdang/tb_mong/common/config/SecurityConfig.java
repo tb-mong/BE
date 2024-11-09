@@ -29,7 +29,7 @@ public class SecurityConfig {
     };
 
     private static final String[] DEVELOP_TEST_PATH = {
-            "api/**",
+            "api/auth/**",
     };
 
     @Bean

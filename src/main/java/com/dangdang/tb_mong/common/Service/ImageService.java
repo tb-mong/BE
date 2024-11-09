@@ -7,6 +7,7 @@ import com.dangdang.tb_mong.common.exception.CustomException;
 import com.dangdang.tb_mong.common.repository.RepreCharacterRepository;
 import com.dangdang.tb_mong.common.repository.UserCharacterRepository;
 import com.dangdang.tb_mong.common.repository.UserRepository;
+import com.dangdang.tb_mong.common.security.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -40,8 +41,8 @@ public class ImageService {
         }
     }
 
-    public Resource getImageByUserId(Long userId) {
-        RepreCharacter repreCharacter = repreCharacterRepository.findByUserId(userId)
+    public Resource getImageByUserId(PrincipalDetails userDetails) {
+        RepreCharacter repreCharacter = repreCharacterRepository.findByUserId(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         try {

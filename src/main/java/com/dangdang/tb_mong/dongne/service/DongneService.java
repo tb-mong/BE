@@ -4,6 +4,7 @@ import com.dangdang.tb_mong.common.entity.*;
 import com.dangdang.tb_mong.common.enumType.ErrorCode;
 import com.dangdang.tb_mong.common.exception.CustomException;
 import com.dangdang.tb_mong.common.repository.*;
+import com.dangdang.tb_mong.common.security.PrincipalDetails;
 import com.dangdang.tb_mong.dongne.dto.LocationNameResponse;
 import com.dangdang.tb_mong.common.dto.TrailDto;
 import com.dangdang.tb_mong.dongne.dto.TopUserResponse;
@@ -26,8 +27,8 @@ public class DongneService {
     private final LikeTrailRepository likeTrailRepository;
     private final UserLocationSummaryRepository userLocationSummaryRepository;
 
-    public LocationNameResponse getLocationName(Long userId) {
-        User user = userRepository.findById(userId)
+    public LocationNameResponse getLocationName(PrincipalDetails userDetails) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         String locationCode = user.getLocation().getCode();
@@ -40,8 +41,8 @@ public class DongneService {
         return locationResponse;
     }
 
-    public TopUserResponse getTopUser(Long userId, Long locationId) {
-        User user = userRepository.findById(userId)
+    public TopUserResponse getTopUser(PrincipalDetails userDetails, Long locationId) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         List<UserLocationSummary> userLocationSummaries = userLocationSummaryRepository.findAllByLocationId(locationId);
@@ -72,8 +73,8 @@ public class DongneService {
         return dto;
     }
 
-    public List<TrailDto> getTrailList(Long userId, Long locationId) {
-        User user = userRepository.findById(userId)
+    public List<TrailDto> getTrailList(PrincipalDetails userDetails, Long locationId) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         List<Trail> trails = trailRepository.findByLocationId(locationId);
@@ -93,8 +94,8 @@ public class DongneService {
         return dtos;
     }
 
-    public List<TrailDto> getSearchByLocation(Long userId, Long locationId, String trailSortOption, String keyword) {
-        User user = userRepository.findById(userId)
+    public List<TrailDto> getSearchByLocation(PrincipalDetails userDetails, Long locationId, String trailSortOption, String keyword) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         if (keyword.equals("") || keyword.equals(null) || keyword.equals(" ")){
@@ -130,7 +131,7 @@ public class DongneService {
 
             case "MY_WALKS":
                 trails = trails.stream()
-                        .filter(trail -> trail.getUser().getId().equals(userId))
+                        .filter(trail -> trail.getUser().getId().equals(user.getId()))
                         .collect(Collectors.toList());
                 break;
 
@@ -155,9 +156,9 @@ public class DongneService {
     }
 
     @Transactional
-    public TrailDto likeTrail(Long userId, Long trailId) {
+    public TrailDto likeTrail(PrincipalDetails userDetails, Long trailId) {
         // 유저와 산책로 엔티티 조회
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         Trail trail = trailRepository.findById(trailId)

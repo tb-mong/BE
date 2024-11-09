@@ -23,20 +23,20 @@ public class HomeController {
 
     @GetMapping(value = "/repre-character", produces = MediaType.IMAGE_JPEG_VALUE)
     @Operation(summary = "대표 캐릭터 조회")
-    public Resource getImage(@RequestParam Long userId) {
-        return imageService.getImageByUserId(userId);
+    public Resource getImage(@AuthenticationPrincipal PrincipalDetails userDetails) {
+        return imageService.getImageByUserId(userDetails);
     }
 
     @GetMapping("/level")
     @Operation(summary = "레벨, 경험치 조회")
-    public UserLevelResponse getLevel(@RequestParam Long userId) {
-        return homeService.getLevel(userId);
+    public UserLevelResponse getLevel(@AuthenticationPrincipal PrincipalDetails userDetails) {
+        return homeService.getLevel(userDetails);
     }
 
     @PostMapping("/levelup")
     @Operation(summary = "레벨업 이벤트")
-    public UserLevelResponse levelupEvent(@RequestParam Long userId) {
-        return homeService.levelupEvent(userId);
+    public UserLevelResponse levelupEvent(@AuthenticationPrincipal PrincipalDetails userDetails) {
+        return homeService.levelupEvent(userDetails);
     }
 
     @GetMapping("/info")

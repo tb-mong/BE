@@ -6,6 +6,7 @@ import com.dangdang.tb_mong.common.enumType.ErrorCode;
 import com.dangdang.tb_mong.common.exception.CustomException;
 import com.dangdang.tb_mong.common.repository.TrailRepository;
 import com.dangdang.tb_mong.common.repository.UserRepository;
+import com.dangdang.tb_mong.common.security.PrincipalDetails;
 import com.dangdang.tb_mong.record.dto.WalkStatusDto;
 import com.dangdang.tb_mong.common.dto.TrailDto;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +27,14 @@ public class RecordService {
     private final UserRepository userRepository;
     private final TrailRepository trailRepository;
 
-    public List<TrailDto> getWalksByDate(Long userId, Date date) {
+    public List<TrailDto> getWalksByDate(PrincipalDetails userDetails, Date date) {
         // 사용자 확인
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         // 사용자가 걸었던 경로들을 특정 날짜로 필터링하여 조회
         LocalDate localDate = new java.sql.Date(date.getTime()).toLocalDate();
-        List<Trail> trails = trailRepository.findByUserIdAndDate(userId, localDate);
+        List<Trail> trails = trailRepository.findByUserIdAndDate(user.getId(), localDate);
 
         // trail 데이터를 trailDto로 매핑
         return trails.stream()
@@ -49,9 +50,9 @@ public class RecordService {
                 .collect(Collectors.toList());
     }
 
-    public List<WalkStatusDto> getWalkStatusByMonth(Long userId, int year, int month) {
+    public List<WalkStatusDto> getWalkStatusByMonth(PrincipalDetails userDetails, int year, int month) {
         // 사용자 확인
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         // 해당 월의 첫 날과 마지막 날 계산
@@ -60,7 +61,7 @@ public class RecordService {
         LocalDate endDate = yearMonth.atEndOfMonth();
 
         // 해당 사용자와 월에 대한 산책 경로 조회
-        List<Trail> trails = trailRepository.findByUserIdAndDateBetween(userId, startDate, endDate);
+        List<Trail> trails = trailRepository.findByUserIdAndDateBetween(user.getId(), startDate, endDate);
 
         // 결과 리스트 생성
         List<WalkStatusDto> walkStatusList = new ArrayList<>();

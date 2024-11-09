@@ -1,6 +1,7 @@
 package com.dangdang.tb_mong.auth.service;
 
 import com.dangdang.tb_mong.auth.dto.KakaoUserInfoResponse;
+import com.dangdang.tb_mong.auth.dto.UserInfoDto;
 import com.dangdang.tb_mong.common.entity.*;
 import com.dangdang.tb_mong.common.entity.Character;
 import com.dangdang.tb_mong.common.enumType.ErrorCode;
@@ -35,24 +36,27 @@ public class KakaoAuthService {
     private final RepreCharacterRepository repreCharacterRepository;
     private final UserLocationSummaryRepository userLocationSummaryRepository;
 
-    public String handleKakaoAuth(String token) {
-        KakaoUserInfoResponse userInfo = getKakaoUserInfo(token);
+    public String handleKakaoAuth(String kakaoAccessToken) {
+        KakaoUserInfoResponse userInfo = getKakaoUserInfo(kakaoAccessToken);
 
         User user = userRepository.findByKakaoUuid(userInfo.getUuid())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER_FOR_SIGNUP));
 
-        String result = jwtTokenProvider.createToken(String.valueOf(user.getId()));
+        UserInfoDto userInfoDto = new UserInfoDto(user.getId(), user.getKakaoEmail());
+
+        String result = jwtTokenProvider.createToken(userInfoDto);
 
         return result;
     }
 
-    public String signUpUser(String token, String locationCode) {
-        KakaoUserInfoResponse userInfo = getKakaoUserInfo(token);
+    public String signUpUser(String kakaoAccessToken, String locationCode) {
+        KakaoUserInfoResponse userInfo = getKakaoUserInfo(kakaoAccessToken);
 
         // 유저가 이미 존재하는지 확인
         Optional<User> existingUser = userRepository.findByKakaoUuid(userInfo.getUuid());
         if (existingUser.isPresent()) {
-            return jwtTokenProvider.createToken(String.valueOf(existingUser.get().getId()));
+            UserInfoDto userInfoDto = new UserInfoDto(existingUser.get().getId(), existingUser.get().getKakaoEmail());
+            return jwtTokenProvider.createToken(userInfoDto);
         }
 
         Location location = locationRepository.findByCode(locationCode)
@@ -110,8 +114,9 @@ public class KakaoAuthService {
             userCharacterRepository.save(uCharacter);
         }
 
+        UserInfoDto userInfoDto = new UserInfoDto(user.getId(), user.getKakaoEmail());
         // JWT 토큰 발급
-        String result = jwtTokenProvider.createToken(String.valueOf(user.getId()));
+        String result = jwtTokenProvider.createToken(userInfoDto);
 
         return result;
     }

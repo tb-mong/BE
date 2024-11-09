@@ -8,6 +8,7 @@ import com.dangdang.tb_mong.common.exception.CustomException;
 import com.dangdang.tb_mong.common.repository.LocationRepository;
 import com.dangdang.tb_mong.common.repository.UserLocationSummaryRepository;
 import com.dangdang.tb_mong.common.repository.UserRepository;
+import com.dangdang.tb_mong.common.security.PrincipalDetails;
 import com.dangdang.tb_mong.settings.dto.LocationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,8 @@ public class SettingsService {
     private final LocationRepository locationRepository;
     private final UserLocationSummaryRepository userLocationSummaryRepository;
 
-    public LocationResponse setLocation(Long userId, String locationCode) {
-        User user = userRepository.findById(userId)
+    public LocationResponse setLocation(PrincipalDetails userDetails, String locationCode) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         Location location = locationRepository.findByCode(locationCode)
@@ -47,8 +48,8 @@ public class SettingsService {
         return dto;
     }
 
-    public String setNickname(Long userId, String newNickname) {
-        User user = userRepository.findById(userId)
+    public String setNickname(PrincipalDetails userDetails, String newNickname) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         user.setNickname(newNickname);

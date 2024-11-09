@@ -1,5 +1,6 @@
 package com.dangdang.tb_mong.trail.controller;
 
+import com.dangdang.tb_mong.common.security.PrincipalDetails;
 import com.dangdang.tb_mong.trail.dto.TrailRequest;
 import com.dangdang.tb_mong.trail.service.TrailService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,32 +23,32 @@ public class TrailController {
 
     @PostMapping("/save")
     @Operation(summary = "산책로 저장")
-    public ResponseEntity saveTrail(@RequestParam Long userId,
+    public ResponseEntity saveTrail(@AuthenticationPrincipal PrincipalDetails userDetails,
                                     @RequestBody TrailRequest trailRequest){
-        trailService.saveTrail(userId, trailRequest);
+        trailService.saveTrail(userDetails, trailRequest);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/load")
     @Operation(summary = "산책로 불러오기")
-    public TrailRequest getTrail(@RequestParam Long userId,
+    public TrailRequest getTrail(@AuthenticationPrincipal PrincipalDetails userDetails,
                                       @RequestParam Long trailId){
-        return trailService.getTrail(userId, trailId);
+        return trailService.getTrail(userDetails, trailId);
     }
 
     @GetMapping(value = "/{trailId}/image", produces = MediaType.IMAGE_JPEG_VALUE)
     @Operation(summary = "산책로 이미지 조회하기")
-    public Resource getTrailImage(@RequestParam Long userId,
+    public Resource getTrailImage(@AuthenticationPrincipal PrincipalDetails userDetails,
                                   @PathVariable Long trailId) {
-        return trailService.getTrailImage(userId, trailId);
+        return trailService.getTrailImage(userDetails, trailId);
     }
 
     @PostMapping(value = "/{trailId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "산책로 이미지 저장")
     public ResponseEntity saveTrailImage(@RequestParam MultipartFile file,
-                                         @RequestParam Long userId,
+                                         @AuthenticationPrincipal PrincipalDetails userDetails,
                                          @PathVariable Long trailId) {
-        trailService.saveTrailImage(file, userId, trailId);
+        trailService.saveTrailImage(file, userDetails, trailId);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

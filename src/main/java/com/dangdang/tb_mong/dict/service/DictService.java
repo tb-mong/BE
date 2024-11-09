@@ -8,6 +8,7 @@ import com.dangdang.tb_mong.common.exception.CustomException;
 import com.dangdang.tb_mong.common.repository.RepreCharacterRepository;
 import com.dangdang.tb_mong.common.repository.UserCharacterRepository;
 import com.dangdang.tb_mong.common.repository.UserRepository;
+import com.dangdang.tb_mong.common.security.PrincipalDetails;
 import com.dangdang.tb_mong.dict.dto.CharacterResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,12 +25,12 @@ public class DictService {
     private final UserCharacterRepository userCharacterRepository;
     private final RepreCharacterRepository repreCharacterRepository;
 
-    public List<CharacterResponse> getCharacterList(Long userId) {
-        User user = userRepository.findById(userId)
+    public List<CharacterResponse> getCharacterList(PrincipalDetails userDetails) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         // 모든 유저 캐릭터 정보
-        List<UserCharacter> characters = userCharacterRepository.findAllByUserId(userId);
+        List<UserCharacter> characters = userCharacterRepository.findAllByUserId(user.getId());
 
         // UserCharacter 목록을 CharacterResponse DTO로 변환
         List<CharacterResponse> responses = characters.stream()
@@ -44,7 +45,10 @@ public class DictService {
         return responses;
     }
 
-    public CharacterResponse setRepreCharacter(Long userId, Long characterId) {
+    public CharacterResponse setRepreCharacter(PrincipalDetails userDetails, Long characterId) {
+        User user = userRepository.findById(userDetails.getUser().getId())
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+
         // 선택한 캐릭터 조회
         UserCharacter newRepreCharacter = userCharacterRepository.findById(characterId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_CHARACTER));
@@ -55,7 +59,7 @@ public class DictService {
         }
 
         // 기존 대표 캐릭터 해제
-        RepreCharacter currentRepreCharacter = repreCharacterRepository.findByUserId(userId)
+        RepreCharacter currentRepreCharacter = repreCharacterRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         if (currentRepreCharacter != null) {

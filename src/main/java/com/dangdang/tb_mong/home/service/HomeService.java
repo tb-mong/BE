@@ -23,8 +23,8 @@ public class HomeService {
     private final UserRepository userRepository;
     private final TrailRepository trailRepository;
 
-    public UserLevelResponse getLevel(Long userId) {
-        User user = userRepository.findById(userId)
+    public UserLevelResponse getLevel(PrincipalDetails userDetails) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         UserLevelResponse dto = new UserLevelResponse(user.getLevel(), user.getExp());
@@ -32,8 +32,8 @@ public class HomeService {
         return dto;
     }
 
-    public UserLevelResponse levelupEvent(Long userId) {
-        User user = userRepository.findById(userId)
+    public UserLevelResponse levelupEvent(PrincipalDetails userDetails) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         if (user.getExp().equals(3)){

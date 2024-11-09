@@ -4,6 +4,7 @@ import com.dangdang.tb_mong.common.entity.*;
 import com.dangdang.tb_mong.common.enumType.ErrorCode;
 import com.dangdang.tb_mong.common.exception.CustomException;
 import com.dangdang.tb_mong.common.repository.*;
+import com.dangdang.tb_mong.common.security.PrincipalDetails;
 import com.dangdang.tb_mong.trail.dto.SpotDto;
 import com.dangdang.tb_mong.trail.dto.TrailRequest;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +39,8 @@ public class TrailService {
     @Value("${file}")
     private String rootFilePath;
 
-    public void saveTrail(Long userId, TrailRequest trailRequest) {
-        User user = userRepository.findById(userId)
+    public void saveTrail(PrincipalDetails userDetails, TrailRequest trailRequest) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         Location location = locationRepository.findByCode(trailRequest.getLocationCode())
@@ -94,8 +95,8 @@ public class TrailService {
         }
     }
 
-    public TrailRequest getTrail(Long userId, Long trailId) {
-        User user = userRepository.findById(userId)
+    public TrailRequest getTrail(PrincipalDetails userDetails, Long trailId) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         Trail trail = trailRepository.findById(trailId)
@@ -118,8 +119,8 @@ public class TrailService {
                 spotDtos);
     }
 
-    public Resource getTrailImage(Long userId, Long trailId) {
-        User user = userRepository.findById(userId)
+    public Resource getTrailImage(PrincipalDetails userDetails, Long trailId) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         Trail trail = trailRepository.findById(trailId)
@@ -146,8 +147,8 @@ public class TrailService {
         }
     }
 
-    public void saveTrailImage(MultipartFile file, Long userId, Long trailId) {
-        User user = userRepository.findById(userId)
+    public void saveTrailImage(MultipartFile file, PrincipalDetails userDetails, Long trailId) {
+        User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         Trail trail = trailRepository.findById(trailId)

@@ -14,6 +14,5 @@ public class Character {
 
     private Integer levelRequired;
     private String image;
-    private String name;
 }
 

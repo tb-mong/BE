@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "spot")
 @Getter
@@ -18,9 +20,9 @@ public class Spot {
     private Long id;
 
     // 위도
-    private double la;
+    private BigDecimal la;
     // 경도
-    private double lo;
+    private BigDecimal lo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trail_id")

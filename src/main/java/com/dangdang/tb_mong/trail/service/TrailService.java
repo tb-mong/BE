@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,6 +39,42 @@ public class TrailService {
 
     @Value("${file}")
     private String rootFilePath;
+
+    public static List<SpotDto> removeRedundantPoints(List<SpotDto> points, double threshold) {
+        List<SpotDto> filtered = new ArrayList<>();
+        filtered.add(points.get(0)); // 첫 번째 점 추가
+
+        for (int i = 1; i < points.size(); i++) {
+            SpotDto current = points.get(i);
+            SpotDto lastAdded = filtered.get(filtered.size() - 1);
+
+            // 두 점 간의 거리 계산
+            double distance = haversine(lastAdded.getLa(), lastAdded.getLo(), current.getLa(), current.getLo());
+
+            // 거리 기준을 초과하는 경우에만 추가
+            if (distance > threshold) {
+                filtered.add(current);
+            }
+        }
+
+        filtered.add(points.get(points.size() - 1)); // 마지막 점 추가
+
+        return filtered;
+    }
+
+    public static double haversine(double lat1, double lon1, double lat2, double lon2) {
+        final double R = 6371000; // 지구 반지름 (미터)
+        double phi1 = Math.toRadians(lat1);
+        double phi2 = Math.toRadians(lat2);
+        double deltaPhi = Math.toRadians(lat2 - lat1);
+        double deltaLambda = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
+                Math.cos(phi1) * Math.cos(phi2) *
+                        Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // 거리 반환
+    }
 
     public void saveTrail(PrincipalDetails userDetails, TrailRequest trailRequest) {
         User user = userRepository.findById(userDetails.getUser().getId())
@@ -64,12 +101,15 @@ public class TrailService {
         user.updateCount();
         user.updateKm(trail.getKm());
 
-        List<SpotDto> spotDtos = trailRequest.getSpotLists();
+        List<SpotDto> originalSpot = trailRequest.getSpotLists();
 
-        for(int i = 0; i < spotDtos.size(); i++){
+        double threshold = 5.0; // 거리 기준 (미터)
+        List<SpotDto> filteredSpot = removeRedundantPoints(originalSpot, threshold); // 불필요한 점 제거
+
+        for(int i = 0; i < filteredSpot.size(); i++){
             Spot spot = Spot.builder()
-                    .la(spotDtos.get(i).getLa())
-                    .lo(spotDtos.get(i).getLo())
+                    .la(BigDecimal.valueOf(filteredSpot.get(i).getLa()))
+                    .lo(BigDecimal.valueOf(filteredSpot.get(i).getLo()))
                     .trail(trail)
                     .build();
             spotRepository.save(spot);
@@ -106,7 +146,7 @@ public class TrailService {
         List<SpotDto> spotDtos = new ArrayList<>();
 
         for (int i = 0; i<spots.size(); i++){
-            SpotDto dto = new SpotDto(spots.get(i).getLo(), spots.get(i).getLa());
+            SpotDto dto = new SpotDto(spots.get(i).getLo().doubleValue(), spots.get(i).getLa().doubleValue());
             spotDtos.add(dto);
         }
 

@@ -25,10 +25,10 @@ public class SettingsService {
 
     public LocationResponse setLocation(PrincipalDetails userDetails, String locationCode) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         Location location = locationRepository.findByCode(locationCode)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_LOCATION));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_LOCATION));
 
         user.setLocation(location);
 
@@ -50,7 +50,7 @@ public class SettingsService {
 
     public String setNickname(PrincipalDetails userDetails, String newNickname) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         user.setNickname(newNickname);
 

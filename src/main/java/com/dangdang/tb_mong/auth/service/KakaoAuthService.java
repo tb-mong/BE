@@ -60,7 +60,7 @@ public class KakaoAuthService {
         }
 
         Location location = locationRepository.findByCode(locationCode)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_LOCATION));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_LOCATION));
 
         User user = User.builder()
                 .kakaoUuid(userInfo.getUuid())

@@ -29,12 +29,12 @@ public class DongneService {
 
     public LocationNameResponse getLocationName(PrincipalDetails userDetails) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         String locationCode = user.getLocation().getCode();
 
         Location location = locationRepository.findByCode(locationCode)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_LOCATION));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_LOCATION));
 
         LocationNameResponse locationResponse = new LocationNameResponse(location.getId(), location.getName());
 
@@ -43,7 +43,7 @@ public class DongneService {
 
     public TopUserResponse getTopUser(PrincipalDetails userDetails, Long locationId) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         List<UserLocationSummary> userLocationSummaries = userLocationSummaryRepository.findAllByLocationId(locationId);
 
@@ -75,7 +75,7 @@ public class DongneService {
 
     public List<TrailDto> getTrailList(PrincipalDetails userDetails, Long locationId) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         List<Trail> trails = trailRepository.findByLocationId(locationId);
 
@@ -96,7 +96,7 @@ public class DongneService {
 
     public List<TrailDto> getSearchByLocation(PrincipalDetails userDetails, Long locationId, String trailSortOption, String keyword) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         if (keyword.equals("") || keyword.equals(null) || keyword.equals(" ")){
             keyword = "ALL";
@@ -159,10 +159,10 @@ public class DongneService {
     public TrailDto likeTrail(PrincipalDetails userDetails, Long trailId) {
         // 유저와 산책로 엔티티 조회
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         Trail trail = trailRepository.findById(trailId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_TRAIL));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_TRAIL));
 
         // 이미 좋아요를 눌렀는지 확인
         boolean alreadyLiked = likeTrailRepository.existsByUserAndTrail(user, trail);

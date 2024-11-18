@@ -78,10 +78,10 @@ public class TrailService {
 
     public void saveTrail(PrincipalDetails userDetails, TrailRequest trailRequest) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         Location location = locationRepository.findByCode(trailRequest.getLocationCode())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_LOCATION));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_LOCATION));
 
         Trail trail = Trail.builder()
                 .name(trailRequest.getName())
@@ -137,10 +137,10 @@ public class TrailService {
 
     public TrailRequest getTrail(PrincipalDetails userDetails, Long trailId) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         Trail trail = trailRepository.findById(trailId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_TRAIL));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_TRAIL));
 
         List<Spot> spots = spotRepository.findAllByTrailId(trailId);
         List<SpotDto> spotDtos = new ArrayList<>();
@@ -161,14 +161,14 @@ public class TrailService {
 
     public Resource getTrailImage(PrincipalDetails userDetails, Long trailId) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         Trail trail = trailRepository.findById(trailId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_TRAIL));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_TRAIL));
 
         // 이미지 파일이 있는지 확인
         if (!StringUtils.hasText(trail.getImage())) {
-            throw new CustomException(HttpStatus.NOT_FOUND, ErrorCode.IMAGE_NOT_FOUND);
+            throw new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_IMAGE);
         }
 
         try {
@@ -189,10 +189,10 @@ public class TrailService {
 
     public void saveTrailImage(MultipartFile file, PrincipalDetails userDetails, Long trailId) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         Trail trail = trailRepository.findById(trailId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_TRAIL));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_TRAIL));
 
         try {
             // 기존 이미지 파일 삭제

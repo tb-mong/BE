@@ -106,19 +106,8 @@ public class TrailService {
         user.updateCount();
         user.updateKm(trail.getKm());
 
-        if (user.getExp() == 3){
-            user.updateLevel();
-            user.resetExp();
-        } else{
+        if (user.getExp() != 3){
             user.updateExp();
-        }
-
-        List<UserCharacter> userCharacters = userCharacterRepository.findAllByUserId(user.getId());
-
-        for(int i = 0; i<user.getLevel(); i++){
-            if (!userCharacters.get(i).getUnlocked()){
-                userCharacters.get(i).setLocked();
-            }
         }
 
         List<SpotDto> originalSpot = trailRequest.getSpotLists();

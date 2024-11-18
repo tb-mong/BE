@@ -2,9 +2,11 @@ package com.dangdang.tb_mong.home.service;
 
 import com.dangdang.tb_mong.common.entity.Trail;
 import com.dangdang.tb_mong.common.entity.User;
+import com.dangdang.tb_mong.common.entity.UserCharacter;
 import com.dangdang.tb_mong.common.enumType.ErrorCode;
 import com.dangdang.tb_mong.common.exception.CustomException;
 import com.dangdang.tb_mong.common.repository.TrailRepository;
+import com.dangdang.tb_mong.common.repository.UserCharacterRepository;
 import com.dangdang.tb_mong.common.repository.UserRepository;
 import com.dangdang.tb_mong.common.security.PrincipalDetails;
 import com.dangdang.tb_mong.home.dto.UserInfoResponse;
@@ -22,6 +24,7 @@ import java.util.List;
 public class HomeService {
     private final UserRepository userRepository;
     private final TrailRepository trailRepository;
+    private final UserCharacterRepository userCharacterRepository;
 
     public UserLevelResponse getLevel(PrincipalDetails userDetails) {
         User user = userRepository.findById(userDetails.getUser().getId())
@@ -38,6 +41,16 @@ public class HomeService {
 
         if (user.getExp().equals(3)){
             user.levelup();
+//            user.resetExp();
+        }
+
+        List<UserCharacter> userCharacters = userCharacterRepository.findAllByUserId(user.getId());
+
+        for(int i = 0; i<user.getLevel(); i++){
+            if (!userCharacters.get(i).getUnlocked()){
+                userCharacters.get(i).setLocked();
+                userCharacterRepository.save(userCharacters.get(i));
+            }
         }
 
         userRepository.save(user);

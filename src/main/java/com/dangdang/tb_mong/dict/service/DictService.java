@@ -35,7 +35,7 @@ public class DictService {
         // UserCharacter 목록을 CharacterResponse DTO로 변환
         List<CharacterResponse> responses = characters.stream()
                 .map(userCharacter -> new CharacterResponse(
-                        userCharacter.getCharacter().getId(),
+                        userCharacter.getId(),
                         userCharacter.getCharacter().getImage(),
                         userCharacter.getIsRepresentative(),
                         userCharacter.getUnlocked()

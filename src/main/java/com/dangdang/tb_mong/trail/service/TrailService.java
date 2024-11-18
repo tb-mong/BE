@@ -83,6 +83,10 @@ public class TrailService {
         Location location = locationRepository.findByCode(trailRequest.getLocationCode())
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_LOCATION));
 
+        if (trailRequest.getSpotLists().isEmpty()){
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.EMPTY_SPOT_LIST);
+        }
+
         Trail trail = Trail.builder()
                 .name(trailRequest.getName())
                 .image(null)
@@ -101,6 +105,13 @@ public class TrailService {
         user.updateCount();
         user.updateKm(trail.getKm());
 
+        if (user.getExp() == 3){
+            user.updateLevel();
+            user.resetExp();
+        } else{
+            user.updateExp();
+        }
+
         List<SpotDto> originalSpot = trailRequest.getSpotLists();
 
         double threshold = 5.0; // 거리 기준 (미터)
@@ -116,7 +127,7 @@ public class TrailService {
         }
 
         try {
-            UserLocationSummary userLocationSummary = userLocationSummaryRepository.findByLocationId(location.getId());
+            UserLocationSummary userLocationSummary = userLocationSummaryRepository.findByUserIdAndLocationId(user.getId(), location.getId());
 
             userLocationSummary.updateCount();
             userLocationSummary.updateKm(trail.getKm());
@@ -143,6 +154,11 @@ public class TrailService {
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_TRAIL));
 
         List<Spot> spots = spotRepository.findAllByTrailId(trailId);
+
+        if (spots.isEmpty()){
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.EMPTY_SPOT_LIST);
+        }
+
         List<SpotDto> spotDtos = new ArrayList<>();
 
         for (int i = 0; i<spots.size(); i++){

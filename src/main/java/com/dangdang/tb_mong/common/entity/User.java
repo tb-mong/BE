@@ -56,4 +56,16 @@ public class User {
         BigDecimal tmp = km.add(this.total_km);
         this.total_km = tmp;
     }
+
+    public void updateLevel() {
+        this.level++;
+    }
+
+    public void resetExp() {
+        this.exp = 0;
+    }
+
+    public void updateExp() {
+        this.exp++;
+    }
 }

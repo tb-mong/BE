@@ -16,6 +16,7 @@ public enum ErrorCode {
     NOT_FOUND_USER_FOR_SIGNUP(400, "사용자 정보를 찾을 수 없습니다. 회원가입이 필요합니다."),
     ALREADY_LIKED_TRAIL(400, "이미 좋아요가 눌러져있습니다."),
     INVALID_SORT_OPTION(400, "정렬 옵션이 유효하지 않습니다."),
+    EMPTY_SPOT_LIST(400, "좌표 리스트가 비어있습니다."),
 
     // 401 Unauthorized
     NOT_MATCHING_INFO(401, "아이디 또는 비밀번호를 잘못 입력했습니다."),

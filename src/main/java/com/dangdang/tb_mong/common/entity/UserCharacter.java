@@ -32,4 +32,8 @@ public class UserCharacter {
     public void setIsRepresentative(Boolean isRepresentative) {
         this.isRepresentative = isRepresentative;
     }
+
+    public void setLocked() {
+        this.unlocked = true;
+    }
 }

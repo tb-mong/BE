@@ -98,7 +98,7 @@ public class DongneService {
         User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
-        if (keyword.equals("") || keyword.equals(null) || keyword.equals(" ")){
+        if (keyword.equals("") || keyword.isEmpty() || keyword.equals(" ")){
             keyword = "ALL";
         }
 

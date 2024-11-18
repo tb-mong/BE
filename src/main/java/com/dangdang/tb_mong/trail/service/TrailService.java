@@ -36,6 +36,7 @@ public class TrailService {
     private final LocationRepository locationRepository;
     private final SpotRepository spotRepository;
     private final UserLocationSummaryRepository userLocationSummaryRepository;
+    private final UserCharacterRepository userCharacterRepository;
 
     @Value("${file}")
     private String rootFilePath;
@@ -110,6 +111,14 @@ public class TrailService {
             user.resetExp();
         } else{
             user.updateExp();
+        }
+
+        List<UserCharacter> userCharacters = userCharacterRepository.findAllByUserId(user.getId());
+
+        for(int i = 0; i<user.getLevel(); i++){
+            if (!userCharacters.get(i).getUnlocked()){
+                userCharacters.get(i).setLocked();
+            }
         }
 
         List<SpotDto> originalSpot = trailRequest.getSpotLists();

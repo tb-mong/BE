@@ -27,7 +27,7 @@ public class DictService {
 
     public List<CharacterResponse> getCharacterList(PrincipalDetails userDetails) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         // 모든 유저 캐릭터 정보
         List<UserCharacter> characters = userCharacterRepository.findAllByUserId(user.getId());
@@ -47,20 +47,20 @@ public class DictService {
 
     public CharacterResponse setRepreCharacter(PrincipalDetails userDetails, Long characterId) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         // 선택한 캐릭터 조회
         UserCharacter newRepreCharacter = userCharacterRepository.findById(characterId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_CHARACTER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_CHARACTER));
 
         // unlocked되지 않은 캐릭터인 경우 예외 발생
         if (!newRepreCharacter.getUnlocked()) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.CHARACTER_NOT_UNLOCKED);
+            throw new CustomException(HttpStatus.FORBIDDEN, ErrorCode.CHARACTER_NOT_UNLOCKED);
         }
 
         // 기존 대표 캐릭터 해제
         RepreCharacter currentRepreCharacter = repreCharacterRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         if (currentRepreCharacter != null) {
             UserCharacter currentRepreUserCharacter = currentRepreCharacter.getUserCharacter();

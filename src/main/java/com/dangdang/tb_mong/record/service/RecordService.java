@@ -30,7 +30,7 @@ public class RecordService {
     public List<TrailDto> getWalksByDate(PrincipalDetails userDetails, Date date) {
         // 사용자 확인
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         // 사용자가 걸었던 경로들을 특정 날짜로 필터링하여 조회
         LocalDate localDate = new java.sql.Date(date.getTime()).toLocalDate();
@@ -53,7 +53,7 @@ public class RecordService {
     public List<WalkStatusDto> getWalkStatusByMonth(PrincipalDetails userDetails, int year, int month) {
         // 사용자 확인
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         // 해당 월의 첫 날과 마지막 날 계산
         YearMonth yearMonth = YearMonth.of(year, month);

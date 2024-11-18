@@ -25,7 +25,7 @@ public class HomeService {
 
     public UserLevelResponse getLevel(PrincipalDetails userDetails) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         UserLevelResponse dto = new UserLevelResponse(user.getLevel(), user.getExp());
 
@@ -34,7 +34,7 @@ public class HomeService {
 
     public UserLevelResponse levelupEvent(PrincipalDetails userDetails) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         if (user.getExp().equals(3)){
             user.levelup();
@@ -49,7 +49,7 @@ public class HomeService {
 
     public UserInfoResponse getUserInfo(PrincipalDetails userDetails) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         double totalKm = user.getTotal_km().doubleValue();
 

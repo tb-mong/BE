@@ -25,7 +25,7 @@ public class ImageService {
 
     public Resource getImageByCharacterId(Long characterId) {
         UserCharacter userCharacter = userCharacterRepository.findById(characterId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_CHARACTER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_CHARACTER));
 
         try {
             // 이미지 URL에서 Resource를 생성
@@ -34,7 +34,7 @@ public class ImageService {
                 // 이미지 파일을 바이트 배열로 변환하여 반환
                 return imageResource;
             } else {
-                throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.FILE_NOT_FOUND);
+                throw new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_IMAGE);
             }
         } catch (IOException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.INTERNAL_SERVER_ERROR);
@@ -43,7 +43,7 @@ public class ImageService {
 
     public Resource getImageByUserId(PrincipalDetails userDetails) {
         RepreCharacter repreCharacter = repreCharacterRepository.findByUserId(userDetails.getUser().getId())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
         try {
             // 이미지 URL에서 Resource를 생성
@@ -52,7 +52,7 @@ public class ImageService {
                 // 이미지 파일을 바이트 배열로 변환하여 반환
                 return imageResource;
             } else {
-                throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.FILE_NOT_FOUND);
+                throw new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_IMAGE);
             }
         } catch (IOException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.INTERNAL_SERVER_ERROR);

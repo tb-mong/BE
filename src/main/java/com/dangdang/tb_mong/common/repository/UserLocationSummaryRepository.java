@@ -10,4 +10,6 @@ public interface UserLocationSummaryRepository extends JpaRepository<UserLocatio
     List<UserLocationSummary> findAllByLocationId(Long locationId);
 
     UserLocationSummary findByLocationId(Long id);
+
+    UserLocationSummary findByUserIdAndLocationId(Long id, Long id1);
 }

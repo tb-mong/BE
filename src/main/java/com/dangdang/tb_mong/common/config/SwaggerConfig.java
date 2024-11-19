@@ -14,9 +14,7 @@ public class SwaggerConfig {
     public OpenAPI openAPI(){
         return new OpenAPI().addSecurityItem(new SecurityRequirement().addList("JWT"))
                 .components(new Components().addSecuritySchemes("JWT", createAPIKeyScheme()))
-                .info(new Info().title("How(HomeWork out) API")
-                        .description("This is How API")
-                        .version("v0.0.1"));
+                .info(apiInfo());
     }
     private Info apiInfo() {
         return new Info()

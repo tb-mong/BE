@@ -7,6 +7,7 @@ import com.dangdang.tb_mong.common.repository.*;
 import com.dangdang.tb_mong.common.security.PrincipalDetails;
 import com.dangdang.tb_mong.trail.dto.SpotDto;
 import com.dangdang.tb_mong.trail.dto.TrailRequest;
+import com.dangdang.tb_mong.trail.dto.TrailResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -77,7 +78,7 @@ public class TrailService {
         return R * c; // 거리 반환
     }
 
-    public void saveTrail(PrincipalDetails userDetails, TrailRequest trailRequest) {
+    public TrailResponse saveTrail(PrincipalDetails userDetails, TrailRequest trailRequest) {
         User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
@@ -142,6 +143,8 @@ public class TrailService {
 
             userLocationSummaryRepository.save(newUserLocationSummary);
         }
+
+        return new TrailResponse(trail.getId());
     }
 
     public TrailRequest getTrail(PrincipalDetails userDetails, Long trailId) {

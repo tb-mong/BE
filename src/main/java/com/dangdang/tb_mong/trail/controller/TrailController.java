@@ -2,6 +2,7 @@ package com.dangdang.tb_mong.trail.controller;
 
 import com.dangdang.tb_mong.common.security.PrincipalDetails;
 import com.dangdang.tb_mong.trail.dto.TrailRequest;
+import com.dangdang.tb_mong.trail.dto.TrailResponse;
 import com.dangdang.tb_mong.trail.service.TrailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,10 +24,9 @@ public class TrailController {
 
     @PostMapping("/save")
     @Operation(summary = "산책로 저장")
-    public ResponseEntity saveTrail(@AuthenticationPrincipal PrincipalDetails userDetails,
-                                    @RequestBody TrailRequest trailRequest){
-        trailService.saveTrail(userDetails, trailRequest);
-        return new ResponseEntity(HttpStatus.OK);
+    public TrailResponse saveTrail(@AuthenticationPrincipal PrincipalDetails userDetails,
+                                   @RequestBody TrailRequest trailRequest){
+        return trailService.saveTrail(userDetails, trailRequest);
     }
 
     @GetMapping("/load")

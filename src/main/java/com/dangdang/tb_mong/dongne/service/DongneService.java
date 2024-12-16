@@ -98,19 +98,24 @@ public class DongneService {
         User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER));
 
-        if (keyword.equals("") || keyword.isEmpty() || keyword.equals(" ")){
+        if (keyword.equals("") || keyword.isEmpty() || keyword.equals(" ")) {
             keyword = "ALL";
         }
 
         List<Trail> trails;
 
-        if (keyword.equals("ALL")){
+        if (keyword.equals("ALL")) {
             trails = trailRepository.findByLocationId(locationId);
-        }else{
+        } else {
             trails = trailRepository.findByLocationIdAndNameContaining(locationId, keyword);
         }
 
-        switch (trailSortOption){
+        // 산책로가 비어있을 경우 처리
+        if (trails.isEmpty()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_TRAIL);
+        }
+
+        switch (trailSortOption.trim().toUpperCase()) {
             case "LIKE":
                 trails = trails.stream()
                         .sorted((t1, t2) -> t2.getLikeCnt().compareTo(t1.getLikeCnt()))
@@ -124,20 +129,35 @@ public class DongneService {
                 break;
 
             case "MY_LIKES":
+                // 내가 좋아요 누른 산책로 필터링
+                List<Trail> likedTrails = likeTrailRepository.findAllByUser(user)
+                        .stream()
+                        .map(LikeTrail::getTrail)
+                        .collect(Collectors.toList());
+
                 trails = trails.stream()
-                        .filter(trail -> likeTrailRepository.existsByUserAndTrail(user, trail))
+                        .filter(likedTrails::contains)
                         .collect(Collectors.toList());
                 break;
 
             case "MY_WALKS":
+                // 내가 등록한 산책로 필터링
                 trails = trails.stream()
                         .filter(trail -> trail.getUser().getId().equals(user.getId()))
                         .collect(Collectors.toList());
                 break;
 
+            case "ALL":
+                // 정렬 없이 그대로 반환
+                break;
+
             default:
                 throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_SORT_OPTION);
+        }
 
+        // 산책로가 비어있을 경우 다시 한번 확인
+        if (trails.isEmpty()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_TRAIL);
         }
 
         List<TrailDto> dtos = trails.stream()

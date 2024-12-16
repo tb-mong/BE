@@ -4,6 +4,7 @@ import com.dangdang.tb_mong.common.entity.UserLocationSummary;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserLocationSummaryRepository extends JpaRepository<UserLocationSummary, Long> {
 
@@ -11,5 +12,5 @@ public interface UserLocationSummaryRepository extends JpaRepository<UserLocatio
 
     UserLocationSummary findByLocationId(Long id);
 
-    UserLocationSummary findByUserIdAndLocationId(Long id, Long id1);
+    Optional<UserLocationSummary> findByUserIdAndLocationId(Long userId, Long locationId);
 }

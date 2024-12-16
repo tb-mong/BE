@@ -85,7 +85,7 @@ public class TrailService {
         Location location = locationRepository.findByCode(trailRequest.getLocationCode())
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_LOCATION));
 
-        if (trailRequest.getSpotLists().isEmpty()){
+        if (trailRequest.getSpotLists().isEmpty()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.EMPTY_SPOT_LIST);
         }
 
@@ -107,7 +107,7 @@ public class TrailService {
         user.updateCount();
         user.updateKm(trail.getKm());
 
-        if (user.getExp() != 3){
+        if (user.getExp() != 3) {
             user.updateExp();
         }
 
@@ -116,33 +116,32 @@ public class TrailService {
         double threshold = 5.0; // 거리 기준 (미터)
         List<SpotDto> filteredSpot = removeRedundantPoints(originalSpot, threshold); // 불필요한 점 제거
 
-        for(int i = 0; i < filteredSpot.size(); i++){
+        for (SpotDto spotDto : filteredSpot) {
             Spot spot = Spot.builder()
-                    .la(BigDecimal.valueOf(filteredSpot.get(i).getLa()))
-                    .lo(BigDecimal.valueOf(filteredSpot.get(i).getLo()))
+                    .la(BigDecimal.valueOf(spotDto.getLa()))
+                    .lo(BigDecimal.valueOf(spotDto.getLo()))
                     .trail(trail)
                     .build();
             spotRepository.save(spot);
         }
 
-        try {
-            UserLocationSummary userLocationSummary = userLocationSummaryRepository.findByUserIdAndLocationId(user.getId(), location.getId());
+        // UserLocationSummary 업데이트 또는 생성
+        UserLocationSummary userLocationSummary = userLocationSummaryRepository
+                .findByUserIdAndLocationId(user.getId(), location.getId())
+                .orElseGet(() -> {
+                    UserLocationSummary newUserLocationSummary = UserLocationSummary.builder()
+                            .count(1)
+                            .km(trail.getKm())
+                            .location(location)
+                            .user(user)
+                            .build();
+                    return userLocationSummaryRepository.save(newUserLocationSummary);
+                });
 
-            userLocationSummary.updateCount();
-            userLocationSummary.updateKm(trail.getKm());
+        userLocationSummary.updateCount();
+        userLocationSummary.updateKm(trail.getKm());
 
-            userLocationSummaryRepository.save(userLocationSummary);
-
-        } catch (NullPointerException e){
-            UserLocationSummary newUserLocationSummary = UserLocationSummary.builder()
-                    .count(1)
-                    .km(trail.getKm())
-                    .location(location)
-                    .user(user)
-                    .build();
-
-            userLocationSummaryRepository.save(newUserLocationSummary);
-        }
+        userLocationSummaryRepository.save(userLocationSummary);
 
         return new TrailResponse(trail.getId());
     }
